@@ -1,22 +1,53 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./frontend/api_util.js":
+/*!******************************!*\
+  !*** ./frontend/api_util.js ***!
+  \******************************/
+/***/ ((module) => {
+
+const APIUtil = {
+  followUser: id => {
+    return $.ajax({
+      method: "POST",
+      url: `/users/${id}/follow`,
+      dataType: "JSON"
+    });
+  },
+
+  unfollowUser: id => {
+    return $.ajax({
+      method: "DELETE",
+      url: `/users/${id}/follow`,
+      dataType: "JSON"
+    });
+  }
+};
+
+module.exports = APIUtil;
+
+/***/ }),
+
 /***/ "./frontend/follow_toggle.js":
 /*!***********************************!*\
   !*** ./frontend/follow_toggle.js ***!
   \***********************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
 
 class FollowToggle {
   constructor(el) {
-    
     this.el = $(el);
     this.userId = el.dataset.userId;
     this.followState = el.dataset.initialFollowState;
     this.render();
+    this.el.prop("disabled", false);
     this.handleClick = this.handleClick.bind(this);
     // debugger;
     this.el.on("click", this.handleClick);
+  
   }
 
   render(){
@@ -26,27 +57,25 @@ class FollowToggle {
     else{
       this.el.text("Unfollow!");
     }
-
+    this.el.prop("disabled", false);
   }
 
   handleClick(event){
-    event.preventDefault();
+    this.el.prop("disabled", true); 
     if(this.followState === "false"){
-      $.ajax({
-        method: "POST",
-        url: `/users/${this.userId}/follow`,
-        dataType: "JSON"
+      APIUtil.followUser(this.userId)
+      .then(() => {
+        this.followState = 'true';
+        this.render();
       });
-      this.followState = 'true';
     } else {
-      $.ajax({
-        method: "DELETE",
-        url: `/users/${this.userId}/follow`,
-        dataType: "JSON"
+      APIUtil.unfollowUser(this.userId)
+      .then(() => {
+        this.followState = 'false';
+        this.render();
       });
-      this.followState = 'false';
     }
-    this.render();
+    
   }
 }
 
