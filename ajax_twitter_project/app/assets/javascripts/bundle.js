@@ -54,18 +54,18 @@ const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
 class FollowToggle {
   constructor(el, options) {
     this.el = $(el);
-    this.userId = el.dataset.userId || options.id;
-    this.followState = el.dataset.initialFollowState || options.followed;
+    this.userId = this.el.data("userId") || options.id;
+    this.followState =  this.el.data("initialFollowState")
+    if(this.followState === undefined) this.followState = options.followed;
     this.render();
     this.el.prop("disabled", false);
     this.handleClick = this.handleClick.bind(this);
-    // debugger;
     this.el.on("click", this.handleClick);
   
   }
 
   render(){
-    if(this.followState === "false"){
+    if(this.followState === false){
       this.el.text("Follow!");
     }
     else{
@@ -76,16 +76,16 @@ class FollowToggle {
 
   handleClick(event){
     this.el.prop("disabled", true); 
-    if(this.followState === "false"){
+    if(this.followState === false){
       APIUtil.followUser(this.userId)
       .then(() => {
-        this.followState = 'true';
+        this.followState = true;
         this.render();
       });
     } else {
       APIUtil.unfollowUser(this.userId)
       .then(() => {
-        this.followState = 'false';
+        this.followState = false;
         this.render();
       });
     }
@@ -104,6 +104,7 @@ module.exports = FollowToggle;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
 class UsersSearch {
   constructor(el) {
     this.el = $(el);
@@ -127,8 +128,9 @@ class UsersSearch {
       const $li = $(`<li>
                     <a href="/users/${results[i].id}">${results[i].username}</a>
                     </li>`);
-      const $button =
-
+      const $button = $(`<button class="follow-toggle"></button>`);
+      new FollowToggle($button, results[i]);
+      $li.append($button);
       this.ul.append($li);
     }
   }

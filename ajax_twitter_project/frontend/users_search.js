@@ -1,4 +1,5 @@
 const APIUtil = require("./api_util");
+const FollowToggle = require("./follow_toggle");
 class UsersSearch {
   constructor(el) {
     this.el = $(el);
@@ -22,8 +23,9 @@ class UsersSearch {
       const $li = $(`<li>
                     <a href="/users/${results[i].id}">${results[i].username}</a>
                     </li>`);
-      const $button =
-
+      const $button = $(`<button class="follow-toggle"></button>`);
+      new FollowToggle($button, results[i]);
+      $li.append($button);
       this.ul.append($li);
     }
   }

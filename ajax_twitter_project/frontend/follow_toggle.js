@@ -3,18 +3,18 @@ const APIUtil = require("./api_util");
 class FollowToggle {
   constructor(el, options) {
     this.el = $(el);
-    this.userId = el.dataset.userId || options.id;
-    this.followState = el.dataset.initialFollowState || options.followed;
+    this.userId = this.el.data("userId") || options.id;
+    this.followState =  this.el.data("initialFollowState")
+    if(this.followState === undefined) this.followState = options.followed;
     this.render();
     this.el.prop("disabled", false);
     this.handleClick = this.handleClick.bind(this);
-    // debugger;
     this.el.on("click", this.handleClick);
   
   }
 
   render(){
-    if(this.followState === "false"){
+    if(this.followState === false){
       this.el.text("Follow!");
     }
     else{
@@ -25,16 +25,16 @@ class FollowToggle {
 
   handleClick(event){
     this.el.prop("disabled", true); 
-    if(this.followState === "false"){
+    if(this.followState === false){
       APIUtil.followUser(this.userId)
       .then(() => {
-        this.followState = 'true';
+        this.followState = true;
         this.render();
       });
     } else {
       APIUtil.unfollowUser(this.userId)
       .then(() => {
-        this.followState = 'false';
+        this.followState = false;
         this.render();
       });
     }

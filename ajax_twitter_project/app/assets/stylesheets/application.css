@@ -13,3 +13,62 @@
  *= require_tree .
  *= require_self
  */
+
+ html, body, div, span, h1, h2, h3, h4, a, p, ol, ul, li, form, label, article, aside, figure, figcaption, footer, header, nav {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  text-decoration: none;
+  box-sizing: content-box;
+}
+
+.page-header {
+    font-family: 'Fredoka One', cursive;
+    font-size: 35px;
+    color: #1da1f2;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    text-align: center;
+}
+.main-nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #E6ECF0;
+}
+
+.main-nav .logo{
+  font-family: 'Fredoka One', cursive;
+  font-size: 50px;
+  color: #1da1f2;
+}
+
+.links{
+  display: flex;
+  align-items: flex-end;
+
+}
+.links > li{
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 10px;
+
+}
+.main-nav .links li a, .main-nav .links li input[type='submit'] {
+  height: calc(100% - 40px);
+  padding: 20px;
+  color: #657786;
+  background-color: white;
+  border-color:  #E6ECF0;
+  border-style: solid;
+}
+
+.main-nav .links li a:hover, .main-nav .links li input[type='submit']:hover {
+  border-color: #1da1f2;
+}
+
+
