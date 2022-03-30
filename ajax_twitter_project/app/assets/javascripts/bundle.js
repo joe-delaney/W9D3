@@ -22,7 +22,21 @@ const APIUtil = {
       url: `/users/${id}/follow`,
       dataType: "JSON"
     });
+  },
+
+  searchUsers: queryVal => {
+    return $.ajax({
+      method: "GET",
+      url: "/users/search",
+      data: {
+        query: queryVal
+      },
+      dataType: "JSON"
+    });
   }
+
+
+
 };
 
 module.exports = APIUtil;
@@ -38,10 +52,10 @@ module.exports = APIUtil;
 const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
 
 class FollowToggle {
-  constructor(el) {
+  constructor(el, options) {
     this.el = $(el);
-    this.userId = el.dataset.userId;
-    this.followState = el.dataset.initialFollowState;
+    this.userId = el.dataset.userId || options.id;
+    this.followState = el.dataset.initialFollowState || options.followed;
     this.render();
     this.el.prop("disabled", false);
     this.handleClick = this.handleClick.bind(this);
@@ -81,6 +95,47 @@ class FollowToggle {
 
 module.exports = FollowToggle;
 
+/***/ }),
+
+/***/ "./frontend/users_search.js":
+/*!**********************************!*\
+  !*** ./frontend/users_search.js ***!
+  \**********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const APIUtil = __webpack_require__(/*! ./api_util */ "./frontend/api_util.js");
+class UsersSearch {
+  constructor(el) {
+    this.el = $(el);
+    this.input = this.el.find("input");
+    this.ul = this.el.find(".users");
+    this.handleInput = this.handleInput.bind(this);
+    this.el.on("input", this.handleInput);
+  }
+  handleInput(e){
+    // debugger;
+    const value = this.input.val();
+    APIUtil.searchUsers(value)
+    .then( (results) => {this.renderResults(results);})
+    .fail(() =>{console.log("FAILLL");});
+    
+  }
+
+  renderResults(results) {
+    this.ul.empty();
+    for(let i = 0; i < results.length; i++) {
+      const $li = $(`<li>
+                    <a href="/users/${results[i].id}">${results[i].username}</a>
+                    </li>`);
+      const $button =
+
+      this.ul.append($li);
+    }
+  }
+}
+
+module.exports = UsersSearch;
+
 /***/ })
 
 /******/ 	});
@@ -117,12 +172,17 @@ var __webpack_exports__ = {};
   !*** ./frontend/twitter.js ***!
   \*****************************/
 const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
+const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
 
 $(() => {
   const buttons = $('button.follow-toggle');
   buttons.each((index, ele) => {
     new FollowToggle(ele);
-    
+  });
+
+  const usersSearch =$('nav.users-search');
+  usersSearch.each((index, ele) => {
+    new UsersSearch(ele);
   });
 });
 })();
