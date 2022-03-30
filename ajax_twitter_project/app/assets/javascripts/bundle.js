@@ -175,6 +175,7 @@ var __webpack_exports__ = {};
   \*****************************/
 const FollowToggle = __webpack_require__(/*! ./follow_toggle */ "./frontend/follow_toggle.js");
 const UsersSearch = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
+const TweetCompose = __webpack_require__(/*! ./users_search */ "./frontend/users_search.js");
 
 $(() => {
   const buttons = $('button.follow-toggle');
@@ -185,6 +186,11 @@ $(() => {
   const usersSearch =$('nav.users-search');
   usersSearch.each((index, ele) => {
     new UsersSearch(ele);
+  });
+
+  const tweetCompose =$('form.tweet-compose');
+  tweetCompose.each((index, ele) => {
+    new TweetCompose(ele);
   });
 });
 })();
